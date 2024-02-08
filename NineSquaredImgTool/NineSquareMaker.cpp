@@ -3,7 +3,6 @@
 void NineSquareMaker::OnMainImgChanged()
 {
     MainImgOrigineSize = CurrentMainImg.size();
-    HIGH_LIGHT_MESSAGE("Image changed,new image with size:"<<MainImgOrigineSize)
     int AimSquaredWidth = min(MainImgOrigineSize.width,MainImgOrigineSize.height);
     AimSquaredWidth = static_cast<int>(floor(static_cast<float>(AimSquaredWidth) / 3.0f));
     SquaredMainImgSize = cv::Size(AimSquaredWidth,AimSquaredWidth);
@@ -83,10 +82,11 @@ void NineSquareMaker::ExportMainImgAsNineSquared(ImagePathHelper& PathHelper)
         for(int ix = 0;ix <= 2; ix++)
         {
             CurrentSquareSubImages.clear();
-            HIGH_LIGHT_MESSAGE("Display Image Index: "<<ix<<","<<iy)
             cv::Mat CurrentMat = GetNineSquaredMatInIndex(ix,iy);
+            HIGH_LIGHT_MESSAGE(R"(Now, let's make image in row: )"<<ix+1<<R"(, clumn:)"<<iy+1<<R"(.)")
             RenderAndShowCurrentCanvas(CurrentMat);
-            
+            HIGH_LIGHT_MESSAGE(R"(Place select an image as subimage of this one, it will be placed in up and down side of this, and will be hidded in thumbnail)")
+            HIGH_LIGHT_MESSAGE(R"(You can also click 'Cancle', which will save this image directly)")
             std::string SelectedPath = ImagePathHelper::SelectPath();
             while(SelectedPath != "")
             {
@@ -94,6 +94,9 @@ void NineSquareMaker::ExportMainImgAsNineSquared(ImagePathHelper& PathHelper)
                 if(SelectMat.cols>0 && SelectMat.rows>0)
                 {
                     CurrentSquareSubImages.emplace_back(SelectMat);
+                    HIGH_LIGHT_MESSAGE(R"(Image displaied is which in row: )"<<ix+1<<R"(, clumn:)"<<iy+1<<R"(.)")
+                    HIGH_LIGHT_MESSAGE(R"(Place select an image as subimage of this one, it will be placed in up and down side of this, and will be hidded in thumbnail)")
+                    HIGH_LIGHT_MESSAGE(R"(You can also click 'Cancle', which will save this image directly)")
                     RenderAndShowCurrentCanvas(CurrentMat);
                 }
                 SelectedPath = ImagePathHelper::SelectPath();
@@ -102,7 +105,7 @@ void NineSquareMaker::ExportMainImgAsNineSquared(ImagePathHelper& PathHelper)
             
             string Suffix = "_"+std::to_string(iy)+"_"+std::to_string(ix);
             cv::imwrite(PathHelper.CreateExportPathWithSuffix(Suffix),RenderCanvas);
-            HIGH_LIGHT_MESSAGE("Export Image to : "<<PathHelper.CreateExportPathWithSuffix(Suffix))
+            HIGH_LIGHT_MESSAGE(R"(Images have been saved in path: )"<<PathHelper.CreateExportPathWithSuffix(Suffix))
             
         }
     }
@@ -132,8 +135,6 @@ void NineSquareMaker::RenderAndShowCurrentCanvas(cv::Mat MainSquaredImg)
         cv::Mat CurrentSubMat = *SubMat;
         cv::Size SubMatSize = CurrentSubMat.size();
         int Height = (int)((float)SubMatSize.height/(float)SubMatSize.width*(float)Width);
-        HIGH_LIGHT_MESSAGE("Size = "<<SubMatSize)
-        HIGH_LIGHT_MESSAGE("Height = "<<Height)
         DesiredHeightMap.emplace_back(pair<int,cv::Mat>(Height,*SubMat));
         if(CurrentIndex<TotalSubImages/2)
         {
@@ -148,7 +149,6 @@ void NineSquareMaker::RenderAndShowCurrentCanvas(cv::Mat MainSquaredImg)
     
     UHeight = max(UHeight,DHeight);
     cv::Size AimSize = cv::Size(Width,Width+UHeight+UHeight);
-    HIGH_LIGHT_MESSAGE("AimSize = "<<AimSize)
     RenderCanvas = cv::Mat::zeros(AimSize.height,AimSize.width,CV_8UC3);
     FillMat(RenderCanvas,cv::Scalar(255,255,255));
 
@@ -178,7 +178,6 @@ void NineSquareMaker::RenderAndShowCurrentCanvas(cv::Mat MainSquaredImg)
     }
     
     cv::Rect Range(0,UHeight,Width,Width);
-    HIGH_LIGHT_MESSAGE(Range)
     CopyMatToRange(MainSquaredImg,RenderCanvas,Range);
     int ScaledHeight = (int)((float)AimSize.height/(float)AimSize.width*256.0);
     cv::resizeWindow(WindowName,256,ScaledHeight);

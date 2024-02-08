@@ -14,7 +14,7 @@ struct ImagePathHelper
     std::string ExportFolder;
     wchar_t* LPCWExportFolder;
 
-    std::string SubFolder = "Export";
+    std::string SubFolder = "_Export";
 
     bool PreparedForExport = false;
 

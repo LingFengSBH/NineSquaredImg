@@ -13,14 +13,14 @@ void ImagePathHelper::InitWithPath(std::string Path)
     NameP = OriginPath.rfind("\\")+1;
     TypeP = OriginPath.rfind(".")+0;
     FolderPath = OriginPath.substr(0,NameP);
-    HIGH_LIGHT_MESSAGE("Folder Path is: "<<FolderPath)
+    //HIGH_LIGHT_MESSAGE("Folder Path is: "<<FolderPath)
 
     ImageName = OriginPath.substr(NameP,TypeP-NameP);
-    HIGH_LIGHT_MESSAGE("ImageName is: "<<ImageName)
+    //HIGH_LIGHT_MESSAGE("ImageName is: "<<ImageName)
 
     ImageType = OriginPath.substr(TypeP,PathLength-TypeP);
     SubFolder = ImageName + SubFolder;
-    HIGH_LIGHT_MESSAGE("ImageType is: "<<ImageType)
+    //HIGH_LIGHT_MESSAGE("ImageType is: "<<ImageType)
 
     PreparedForExport = false;
 }
@@ -89,7 +89,6 @@ void ImagePathHelper::PrepareExport()
     StringToLPCW(ExportFolder,LPCWExportFolder);
 
     CreateDirectory(LPCWExportFolder,NULL);
-    HIGH_LIGHT_MESSAGE("Aim folder path : " + ExportFolder)
     PreparedForExport = true;
 }
 

@@ -11,7 +11,9 @@ void ExportCallback(int state,void* userdata)
 
 int main(int argc, char* argv[])
 {
+    system("chcp 65001");
     ImagePathHelper ImagePath = ImagePathHelper();
+    HIGH_LIGHT_MESSAGE(R"(Place select a image as main image of Nine-Squared images, click 'Open' to execute)")
     ImagePath.InitWithSelector();
     ImagePath.PrepareExport();
     cv::namedWindow("NineSquareMakerWindow",cv::WINDOW_NORMAL);
@@ -19,9 +21,10 @@ int main(int argc, char* argv[])
     NineSquareMaker* Maker = new NineSquareMaker("NineSquareMakerWindow");
     
     Maker->LoadMainImg(TestImgPath);
+    HIGH_LIGHT_MESSAGE(R"(You chose image: )"<<ImagePath.ImageName<<R"(. Now, let's create each image of Nine-Squared images)")
     Maker->ExportMainImgAsNineSquared(ImagePath);
     //cv::waitKey(0);
-    printf("Finished");
+    HIGH_LIGHT_MESSAGE(R"(Nine-Squared images had been exported to path: )"<<ImagePath.ExportFolder)
     ImagePath.OpenExportFolder();
     
     return 0;
