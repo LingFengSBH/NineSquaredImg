@@ -91,8 +91,11 @@ void NineSquareMaker::ExportMainImgAsNineSquared(ImagePathHelper& PathHelper)
             while(SelectedPath != "")
             {
                 cv::Mat SelectMat = cv::imread(SelectedPath);
-                CurrentSquareSubImages.emplace_back(SelectMat);
-                RenderAndShowCurrentCanvas(CurrentMat);
+                if(SelectMat.cols>0 && SelectMat.rows>0)
+                {
+                    CurrentSquareSubImages.emplace_back(SelectMat);
+                    RenderAndShowCurrentCanvas(CurrentMat);
+                }
                 SelectedPath = ImagePathHelper::SelectPath();
             }
            
@@ -107,15 +110,23 @@ void NineSquareMaker::ExportMainImgAsNineSquared(ImagePathHelper& PathHelper)
 
 void NineSquareMaker::RenderAndShowCurrentCanvas(cv::Mat MainSquaredImg)
 {
-    int Width = MainSquaredImg.rows;
-    
     list<cv::Mat>::iterator SubMat;
     int TotalSubImages = static_cast<int>(CurrentSquareSubImages.size());
     int CurrentIndex = 0;
     int UHeight = 0;
     int DHeight = 0;
+    
+    int Width = MainSquaredImg.cols;
+    list<pair<int,cv::Mat>> DesiredHeightMap;
+    
+    //Find max width of sub images as output width
+    for(SubMat = CurrentSquareSubImages.begin();SubMat!=CurrentSquareSubImages.end();SubMat++)
+    {
+        cv::Mat CurrentSubMat = *SubMat;
+        Width = max(CurrentSubMat.cols,Width);
+    }
 
-    list<pair<int,cv::Mat>> DesiredHeightMap; 
+    //Calculate total height we need in up % down side
     for(SubMat = CurrentSquareSubImages.begin();SubMat!=CurrentSquareSubImages.end();SubMat++)
     {
         cv::Mat CurrentSubMat = *SubMat;
